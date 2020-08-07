@@ -13,10 +13,12 @@ import { TermCriteria } from './TermCriteria.d';
 import { OCRHMMClassifier } from './OCRHMMClassifier.d';
 import { Net } from './Net.d';
 
-export interface HistAxes {
+export class HistAxes {
   channel: number;
   bins: number;
   ranges: number[];
+
+  constructor(opts: { channel: number, bins: number, ranges: [number, number] });
 }
 
 export function accumulate(src: Mat, dst: Mat, mask?: Mat): void;
@@ -37,7 +39,10 @@ export function blobFromImagesAsync(image: Mat[], scaleFactor?: number, size?: S
 export function blur(mat: Mat, kSize: Size, anchor?: Point2, borderType?: number): Mat;
 export function blurAsync(mat: Mat, kSize: Size, anchor?: Point2, borderType?: number): Promise<Mat>;
 export function NMSBoxes(bboxes: Rect[], scores: number[], scoreThreshold: number, nmsThreshold: number): number[];
+/** @deprecated */
+export function calcHist(img: Mat, histAxes: { channel: number, bins: number, ranges: [number, number] }[], mask?: Mat): Mat;
 export function calcHist(img: Mat, histAxes: HistAxes[], mask?: Mat): Mat;
+export function calcHistAsync(img: Mat, histAxes: HistAxes[], mask?: Mat): Promise<Mat>;
 export function calibrateCamera(objectPoints: Point3[], imagePoints: Point2[], imageSize: Size, cameraMatrix: Mat, distCoeffs: number[], flags?: number, criteria?: TermCriteria): { returnValue: number, rvecs: Vec3[], tvecs: Vec3[], distCoeffs: number[] };
 export function calibrateCameraAsync(objectPoints: Point3[], imagePoints: Point2[], imageSize: Size, cameraMatrix: Mat, distCoeffs: number[], flags?: number, criteria?: TermCriteria): Promise<{ returnValue: number, rvecs: Vec3[], tvecs: Vec3[], distCoeffs: number[] }>;
 export function calibrateCameraExtended(objectPoints: Point3[], imagePoints: Point2[], imageSize: Size, cameraMatrix: Mat, distCoeffs: number[], flags?: number, criteria?: TermCriteria): { returnValue: number, rvecs: Vec3[], tvecs: Vec3[], distCoeffs: number[], stdDeviationsIntrinsics: Mat, stdDeviationsExtrinsics: Mat, perViewErrors: number[] };
@@ -88,6 +93,8 @@ export function getBuildInformation(): string;
 export function getPerspectiveTransform(srcPoints: Point2[], dstPoints: Point2[]): Mat;
 export function getRotationMatrix2D(center: Point2, angle: number, scale?: number): Mat;
 export function getStructuringElement(shape: number, kernelSize: Size, anchor?: Point2): Mat;
+export function getTextSize(text: string, fontFace: number, fontScale: number, thickness: number): {size: Size, baseLine: number};
+export function getTextSizeAsync(text: string, fontFace: number, fontScale: number, thickness: number): Promise<{size: Size, baseLine: number}>;
 export function getValidDisparityROI(roi1: Rect[], roi2: Rect[], minDisparity: number, numberOfDisparities: number, SADWindowSize: number): Rect;
 export function getValidDisparityROIAsync(roi1: Rect[], roi2: Rect[], minDisparity: number, numberOfDisparities: number, SADWindowSize: number): Promise<Rect>;
 export function goodFeaturesToTrack(mat: Mat, maxCorners: number, qualityLevel: number, minDistance: number, mask?: Mat, blockSize?: number, gradientSize?: number, useHarrisDetector?: boolean, harrisK?: number): Point2[];
@@ -105,6 +112,7 @@ export function imwriteAsync(filePath: string, img: Mat, flags?: number[]): Prom
 export function initCameraMatrix2D(objectPoints: Point3[], imagePoints: Point2[], imageSize: Size, aspectRatio?: number): Mat;
 export function initCameraMatrix2DAsync(objectPoints: Point3[], imagePoints: Point2[], imageSize: Size, aspectRatio?: number): Promise<Mat>;
 export function kmeans(data: Point2[], k: number, attempts: number, termCriteria: TermCriteria, flags: number): { labels: number[], centers: Point2[] };
+export function kmeans(data: Point3[], k: number, attempts: number, termCriteria: TermCriteria, flags: number): { labels: number[], centers: Point3[] };
 export function loadOCRHMMClassifierCNN(file: string): OCRHMMClassifier;
 export function loadOCRHMMClassifierCNNAsync(file: string): Promise<OCRHMMClassifier>;
 export function loadOCRHMMClassifierNM(file: string): OCRHMMClassifier;
@@ -200,6 +208,7 @@ export function transformAsync(mat: Mat, m: Mat): Promise<Mat>;
 export function undistortPoints(srcPoints: Point2[], cameraMatrix: Mat, distCoeffs: Mat): Point2[];
 export function undistortPointsAsync(srcPoints: Point2[], cameraMatrix: Mat, distCoeffs: Mat): Promise<Point2[]>;
 export function waitKey(delay?: number): number;
+export function waitKeyEx(delay?: number): number;
 
 export type DrawParams = {
   thickness?: number;
